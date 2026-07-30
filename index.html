@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tip Out — Distribution Ledger</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Space+Mono:wght@400;700&display=swap');
+
+  :root{
+    --ink:#1c1a17;
+    --paper:#efe9dd;
+    --paper-dim:#e2dac9;
+    --brass:#a9762c;
+    --brass-bright:#c98e3c;
+    --line: rgba(28,26,23,0.18);
+    --red:#8c3a2b;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--ink);
+    color:var(--ink);
+    font-family:'Space Mono', monospace;
+    min-height:100vh;
+    padding:48px 20px;
+    display:flex;
+    justify-content:center;
+  }
+
+  .ledger{
+    width:100%;
+    max-width:640px;
+    background:
+      linear-gradient(var(--paper), var(--paper));
+    position:relative;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+  }
+
+  .ledger::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; right:0; height:6px;
+    background: repeating-linear-gradient(90deg, var(--brass) 0 14px, transparent 14px 20px);
+    opacity:0.7;
+  }
+
+  header{
+    padding:40px 40px 24px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin-bottom:10px;
+  }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:40px;
+    margin:0 0 8px;
+    line-height:1.05;
+  }
+
+  .sub{
+    font-size:13px;
+    color:rgba(28,26,23,0.65);
+    max-width:46ch;
+    line-height:1.5;
+  }
+
+  .pool-block{
+    padding:24px 40px;
+    border-bottom: 1px dashed var(--line);
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+  }
+
+  .pool-label{
+    font-family:'Fraunces', serif;
+    font-size:15px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+  }
+
+  .pool-input-wrap{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+  }
+
+  .pool-input-wrap span{
+    font-size:20px;
+    color:var(--brass);
+    font-weight:700;
+  }
+
+  #poolTotal{
+    font-family:'Space Mono', monospace;
+    font-size:24px;
+    font-weight:700;
+    background:transparent;
+    border:none;
+    border-bottom:2px solid var(--ink);
+    width:150px;
+    text-align:right;
+    padding:2px 0;
+    color:var(--ink);
+  }
+  #poolTotal:focus{ outline:none; border-bottom-color:var(--brass); }
+
+  .rows{
+    padding:8px 40px 4px;
+  }
+
+  .col-heads{
+    display:grid;
+    grid-template-columns: 1fr 92px 110px 32px;
+    gap:12px;
+    padding:14px 0 8px;
+    font-size:10px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:rgba(28,26,23,0.5);
+    border-bottom:1px solid var(--line);
+  }
+  .col-heads .num{ text-align:right; }
+
+  .row{
+    display:grid;
+    grid-template-columns: 1fr 92px 110px 32px;
+    gap:12px;
+    align-items:center;
+    padding:12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .row input[type="text"], .row input[type="number"]{
+    font-family:'Space Mono', monospace;
+    background:var(--paper-dim);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:8px 10px;
+    font-size:14px;
+    color:var(--ink);
+    width:100%;
+  }
+  .row input[type="number"]{ text-align:right; }
+  .row input:focus{ outline:none; border-color:var(--brass); background:#fff; }
+
+  .share-out{
+    text-align:right;
+    font-weight:700;
+    font-size:15px;
+    color:var(--red);
+    white-space:nowrap;
+  }
+
+  .remove-btn{
+    background:none;
+    border:none;
+    color:rgba(28,26,23,0.35);
+    font-size:18px;
+    cursor:pointer;
+    line-height:1;
+    padding:4px;
+    transition:color 0.15s;
+  }
+  .remove-btn:hover{ color:var(--red); }
+
+  .add-row{
+    margin:16px 0 8px;
+    background:none;
+    border:1.5px dashed var(--brass);
+    color:var(--brass);
+    font-family:'Space Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    padding:10px 16px;
+    border-radius:3px;
+    cursor:pointer;
+    width:100%;
+    transition: all 0.15s;
+  }
+  .add-row:hover{ background:var(--brass); color:var(--paper); }
+
+  .summary{
+    margin:12px 40px 0;
+    padding:18px 0 4px;
+    border-top:2px solid var(--ink);
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    color:rgba(28,26,23,0.6);
+  }
+
+  .summary strong{
+    color:var(--ink);
+    font-size:13px;
+  }
+
+  .warning{
+    margin:0 40px;
+    padding:10px 14px;
+    background: rgba(140,58,43,0.1);
+    border:1px solid var(--red);
+    color:var(--red);
+    font-size:12px;
+    border-radius:3px;
+    display:none;
+  }
+  .warning.show{ display:block; }
+
+  footer{
+    padding:28px 40px 36px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+  }
+
+  .stamp{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:12px;
+    color:rgba(28,26,23,0.4);
+  }
+
+  @media (max-width:480px){
+    header{ padding:32px 24px 20px; }
+    h1{ font-size:30px; }
+    .pool-block, .rows, .summary, footer{ padding-left:24px; padding-right:24px; }
+    .col-heads, .row{ grid-template-columns: 1fr 70px 90px 24px; gap:8px; }
+    .row input{ font-size:13px; padding:7px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ledger">
+  <header>
+    <div class="eyebrow">Close-out · Tip Pool</div>
+    <h1>Tip Out</h1>
+    <div class="sub">Split the pool by hours on the clock. Add every name on shift, log their hours, and the ledger settles the rest.</div>
+  </header>
+
+  <div class="pool-block">
+    <div class="pool-label">Total Pool</div>
+    <div class="pool-input-wrap">
+      <span>$</span>
+      <input type="number" id="poolTotal" value="0.00" min="0" step="0.01" inputmode="decimal">
+    </div>
+  </div>
+
+  <div class="rows">
+    <div class="col-heads">
+      <div>Employee</div>
+      <div class="num">Hours</div>
+      <div class="num">Share</div>
+      <div></div>
+    </div>
+    <div id="rowContainer"></div>
+  </div>
+
+  <button class="add-row" id="addRowBtn">+ Add employee</button>
+
+  <div class="warning" id="warningBox"></div>
+
+  <div class="summary">
+    <div>Total hours logged: <strong id="sumHours">0</strong></div>
+    <div>Distributed: <strong id="sumDistributed">$0.00</strong></div>
+  </div>
+
+  <footer>
+    <div class="stamp">per-hour rate: <span id="perHourRate">$0.00</span>/hr</div>
+    <div class="stamp" id="dateStamp"></div>
+  </footer>
+</div>
+
+<script>
+  const rowContainer = document.getElementById('rowContainer');
+  const poolTotalInput = document.getElementById('poolTotal');
+  const addRowBtn = document.getElementById('addRowBtn');
+  const sumHoursEl = document.getElementById('sumHours');
+  const sumDistributedEl = document.getElementById('sumDistributed');
+  const perHourRateEl = document.getElementById('perHourRate');
+  const warningBox = document.getElementById('warningBox');
+
+  let rowId = 0;
+
+  function fmtMoney(n){
+    return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+
+  function createRow(name = '', hours = ''){
+    rowId++;
+    const row = document.createElement('div');
+    row.className = 'row';
+    row.dataset.id = rowId;
+    row.innerHTML = `
+      <input type="text" class="name-input" placeholder="Employee name" value="${name}">
+      <input type="number" class="hours-input" placeholder="0" min="0" step="0.25" value="${hours}">
+      <div class="share-out">$0.00</div>
+      <button class="remove-btn" title="Remove">&times;</button>
+    `;
+    row.querySelector('.name-input').addEventListener('input', recalc);
+    row.querySelector('.hours-input').addEventListener('input', recalc);
+    row.querySelector('.remove-btn').addEventListener('click', () => {
+      row.remove();
+      recalc();
+    });
+    rowContainer.appendChild(row);
+  }
+
+  function recalc(){
+    const pool = parseFloat(poolTotalInput.value) || 0;
+    const rows = Array.from(rowContainer.querySelectorAll('.row'));
+
+    let totalHours = 0;
+    const hoursList = rows.map(row => {
+      const h = parseFloat(row.querySelector('.hours-input').value) || 0;
+      totalHours += h;
+      return h;
+    });
+
+    let distributed = 0;
+    rows.forEach((row, i) => {
+      const share = totalHours > 0 ? (hoursList[i] / totalHours) * pool : 0;
+      row.querySelector('.share-out').textContent = fmtMoney(share);
+      distributed += share;
+    });
+
+    sumHoursEl.textContent = totalHours.toLocaleString('en-US', {maximumFractionDigits:2});
+    sumDistributedEl.textContent = fmtMoney(distributed);
+    perHourRateEl.textContent = totalHours > 0 ? (pool/totalHours).toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}) + '/hr' : '$0.00/hr';
+
+    if (rows.length === 0){
+      warningBox.classList.remove('show');
+    } else if (totalHours === 0){
+      warningBox.textContent = 'Log at least one hour to distribute the pool.';
+      warningBox.classList.add('show');
+    } else if (pool === 0){
+      warningBox.textContent = 'Enter the total pool amount to see shares.';
+      warningBox.classList.add('show');
+    } else {
+      warningBox.classList.remove('show');
+    }
+  }
+
+  addRowBtn.addEventListener('click', () => { createRow(); recalc(); });
+  poolTotalInput.addEventListener('input', recalc);
+
+  // seed with three starter rows
+  createRow('', '');
+  createRow('', '');
+  createRow('', '');
+  recalc();
+
+  document.getElementById('dateStamp').textContent = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+</script>
+
+</body>
+</html>
