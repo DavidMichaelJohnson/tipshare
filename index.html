@@ -479,7 +479,7 @@
     </div>
   </div>
 
-  <button class="enter-btn" id="enterBtn">Start splitting tips →</button>
+  <button class="enter-btn" id="enterBtn">Skip →</button>
 </div>
 
 <script>
@@ -588,13 +588,17 @@
   const enterBtn = document.getElementById('enterBtn');
   const overlay = document.getElementById('splashOverlay');
 
+  let dismissTimer = null;
+
   function buildBubble(){
     bubble.innerHTML = words.map(w => `<span class="cursor-word">${w}</span>`).join(' ');
   }
 
   function play(){
+    if(dismissTimer) clearTimeout(dismissTimer);
+    overlay.classList.remove('dismissed');
     buildBubble();
-    enterBtn.classList.remove('ready');
+    enterBtn.classList.add('ready'); // available to skip right away
     const spans = bubble.querySelectorAll('.cursor-word');
 
     let i = 0;
@@ -606,13 +610,15 @@
         i++;
         setTimeout(step, perWord);
       } else {
-        setTimeout(() => enterBtn.classList.add('ready'), 200);
+        // Auto-advance to the calculator a moment after he finishes talking.
+        dismissTimer = setTimeout(dismiss, 1400);
       }
     }
     step();
   }
 
   function dismiss(){
+    if(dismissTimer) clearTimeout(dismissTimer);
     overlay.classList.add('dismissed');
   }
 
