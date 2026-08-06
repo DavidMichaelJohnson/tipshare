@@ -293,16 +293,16 @@
     background:#000;
   }
 
-  /* On phones, drop the "floating card" look and let the splash fill the
-     whole screen edge-to-edge for a proper full-bleed mobile experience. */
+  /* On phones, go full-width edge-to-edge but keep the photo's real aspect
+     ratio (rather than stretching to fill the viewport height), so nothing
+     gets cropped off the sides — any leftover space shows above/below
+     against the dark background instead. */
   @media (max-width: 640px){
     #splashOverlay{ padding:0; }
     .splash{
       width:100vw;
-      height:100vh;
-      height:100svh;
-      height:100dvh;
-      aspect-ratio:unset;
+      aspect-ratio:800/1066;
+      height:auto;
       border-radius:0;
       box-shadow:none;
     }
