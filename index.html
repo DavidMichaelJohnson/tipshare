@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Tip Out — Distribution Ledger</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
@@ -293,6 +293,22 @@
     background:#000;
   }
 
+  /* On phones, drop the "floating card" look and let the splash fill the
+     whole screen edge-to-edge for a proper full-bleed mobile experience. */
+  @media (max-width: 640px){
+    #splashOverlay{ padding:0; }
+    .splash{
+      width:100vw;
+      height:100vh;
+      height:100svh;
+      height:100dvh;
+      aspect-ratio:unset;
+      border-radius:0;
+      box-shadow:none;
+    }
+    .photo-frame{ border-radius:0; }
+  }
+
   .photo-frame{
     position:absolute;
     inset:0;
@@ -375,24 +391,29 @@
   .bubble .cursor-word{ transition:opacity .04s linear; }
 
   .enter-btn{
+    position:absolute;
+    left:50%;
+    bottom:calc(env(safe-area-inset-bottom, 0px) + 22px);
+    transform:translateX(-50%) translateY(6px);
     font-family:'Space Mono', monospace;
     font-size:13px;
     letter-spacing:0.08em;
     text-transform:uppercase;
     color:var(--splash-cream);
-    background:none;
+    background:rgba(0,0,0,0.35);
+    backdrop-filter:blur(2px);
     border:1.5px dashed var(--brass-bright);
     padding:12px 22px;
     border-radius:3px;
     cursor:pointer;
     opacity:0;
-    transform:translateY(6px);
     transition: opacity 0.4s ease, transform 0.4s ease, background 0.15s ease, color 0.15s ease;
     pointer-events:none;
+    z-index:5;
   }
   .enter-btn.ready{
     opacity:1;
-    transform:translateY(0);
+    transform:translateX(-50%) translateY(0);
     pointer-events:auto;
   }
   .enter-btn:hover{ background:var(--brass-bright); color:var(--splash-ink); }
