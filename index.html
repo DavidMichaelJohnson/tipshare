@@ -418,6 +418,21 @@
   }
   .enter-btn:hover{ background:var(--brass-bright); color:var(--splash-ink); }
 
+  /* Give the bubble real clearance above the Skip button on phones, and
+     dial the text down a touch so it doesn't feel oversized on narrow
+     screens. Placed after the base rules so it wins the cascade. */
+  @media (max-width: 640px){
+    .bubble-wrap{
+      left:5%;
+      right:5%;
+      bottom:calc(env(safe-area-inset-bottom, 0px) + 76px);
+    }
+    .bubble{
+      font-size:clamp(12px, 3.3vw, 15px);
+      padding:12px 14px 14px;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce){
     .bubble{ animation:none; }
     .enter-btn{ transition:none; }
