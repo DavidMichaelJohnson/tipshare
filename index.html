@@ -504,7 +504,7 @@
     row.dataset.id = rowId;
     row.innerHTML = `
       <input type="text" class="name-input" placeholder="Employee name" value="${name}">
-      <input type="number" class="hours-input" placeholder="0" min="0" step="0.25" value="${hours}">
+      <input type="number" class="hours-input" placeholder="0.00" min="0" step="0.25" value="${hours}" inputmode="decimal">
       <div class="share-out">$0.00</div>
       <button class="remove-btn" title="Remove">&times;</button>
     `;
