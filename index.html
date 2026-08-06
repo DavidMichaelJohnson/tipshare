@@ -374,26 +374,6 @@
   .bubble .cursor-word.shown{ opacity:1; }
   .bubble .cursor-word{ transition:opacity .04s linear; }
 
-  .replay{
-    position:absolute;
-    top:4%;
-    right:5%;
-    font-family:'Karla',sans-serif;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:1px;
-    text-transform:uppercase;
-    color:var(--splash-cream);
-    background:rgba(0,0,0,0.35);
-    border:1px solid rgba(224,168,98,0.5);
-    padding:6px 10px;
-    border-radius:20px;
-    cursor:pointer;
-    backdrop-filter:blur(2px);
-    transition:background .2s ease;
-  }
-  .replay:hover{ background:rgba(0,0,0,0.55); }
-
   .enter-btn{
     font-family:'Space Mono', monospace;
     font-size:13px;
@@ -611,7 +591,7 @@
         setTimeout(step, perWord);
       } else {
         // Auto-advance to the calculator a moment after he finishes talking.
-        dismissTimer = setTimeout(dismiss, 1400);
+        dismissTimer = setTimeout(dismiss, 5000);
       }
     }
     step();
